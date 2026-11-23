@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.13)
 
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+project(OpenGLPhysics0 C CXX)
 
-project(OpenGLPhysics0)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(
 	Program
@@ -15,6 +15,7 @@ add_executable(
 	./Dependencies/imgui/imgui_draw.cpp
 	./Dependencies/imgui/imgui_demo.cpp
 	./Dependencies/imgui/imgui_widgets.cpp
+	./Dependencies/imgui/imgui_tables.cpp
 	./engine/collision/Bound.cpp
 	./engine/collision/Collision.cpp
 	./engine/collision/CollisionBatchResolver.cpp
@@ -50,10 +51,19 @@ add_executable(
 	./experimental/QuadTree.cpp
 )
 
-target_include_directories(Program PRIVATE "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32\\include")
+target_include_directories(Program PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_directories(Program PRIVATE ${CMAKE_SOURCE_DIR}/lib)
 
 target_link_libraries(Program
 	glew32
 	glfw3dll
 	opengl32
+)
+
+# Copy the runtime DLLs next to the built executable
+add_custom_command(TARGET Program POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		${CMAKE_SOURCE_DIR}/bin/glew32.dll
+		${CMAKE_SOURCE_DIR}/bin/glfw3.dll
+		$<TARGET_FILE_DIR:Program>
 )
