@@ -154,6 +154,7 @@ void SceneTest::input(GWindow* window){
 
     }
 
+    //finite mass circle
     if(GInput::isKeyPressed(GLFW_KEY_C)){
         glm::vec2 mousePos = GInput::getMouseXY();
 
@@ -170,7 +171,7 @@ void SceneTest::input(GWindow* window){
         addObject(newObject);
     }
 
-
+    //infinite mass circle
     if(GInput::isKeyPressed(GLFW_KEY_R)){
         glm::vec2 mousePos = GInput::getMouseXY();
 
