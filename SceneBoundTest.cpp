@@ -16,12 +16,21 @@ SceneBoundTest::SceneBoundTest(Shader* shader, Texture* texture):
 		glm::vec2(1.0f,1.0f)
 	);
 	m_object->createBound(BoundingType::AxisAligned);
-
+	
+	m_b = new Object(
+		glm::vec2(20.0f,0.0f),
+		0.0f,
+		glm::vec2(1.0f,1.0f)
+	);
+	m_b->createBound(BoundingType::AxisAligned);
+	
+	
 	addObject(m_object);
-			
+	addObject(m_b);
 };
 
-SceneBoundTest::~SceneBoundTest(){}
+SceneBoundTest::~SceneBoundTest(){
+}
 
 
 void SceneBoundTest::render(GWindow* window){
@@ -43,27 +52,27 @@ void SceneBoundTest::render(GWindow* window){
 	Renderer::unbind();
 
 	//FACE DRAW
-	Renderer::basicRenderBegin(BasicRenderMode::BRM_LINES);
-	Bound* bound = m_object->getBound();
-	Face* currentFace;
-	glm::vec2 currentNormal;
-	glm::vec2 midpoint;
-	for(int i = 0;i<bound->getVertexCount();i++){
-		currentFace = bound->getFaceInArray(i);
-		float x1 = *(currentFace->x1)/100.0f;
-		float y1 = *(currentFace->y1)/100.0f;
-		float x2 = *(currentFace->x2)/100.0f;
-		float y2 = *(currentFace->y2)/100.0f;
-		Renderer::basicRenderPoint(x1,y1);
-		Renderer::basicRenderPoint(x2,y2);
+	// Renderer::basicRenderBegin(BasicRenderMode::BRM_LINES);
+	// Bound* bound = m_object->getBound();
+	// Face* currentFace;
+	// glm::vec2 currentNormal;
+	// glm::vec2 midpoint;
+	// for(int i = 0;i<bound->getVertexCount();i++){
+	// 	currentFace = bound->getFaceInArray(i);
+	// 	float x1 = *(currentFace->x1)/100.0f;
+	// 	float y1 = *(currentFace->y1)/100.0f;
+	// 	float x2 = *(currentFace->x2)/100.0f;
+	// 	float y2 = *(currentFace->y2)/100.0f;
+	// 	Renderer::basicRenderPoint(x1,y1);
+	// 	Renderer::basicRenderPoint(x2,y2);
 
-		midpoint = EngineMath::calcMidpoint(x1,y1,x2,y2);
-		currentNormal = EngineMath::calcFaceNormal(x1,y1,x2,y2);
-		currentNormal += midpoint;
-		Renderer::basicRenderPoint(midpoint.x,midpoint.y);
-		Renderer::basicRenderPoint(currentNormal.x,currentNormal.y);
-	}
-	Renderer::basicRenderEnd();
+	// 	midpoint = EngineMath::calcMidpoint(x1,y1,x2,y2);
+	// 	currentNormal = EngineMath::calcFaceNormal(x1,y1,x2,y2) / 100.0f;
+	// 	currentNormal += midpoint;
+	// 	Renderer::basicRenderPoint(midpoint.x,midpoint.y);
+	// 	Renderer::basicRenderPoint(currentNormal.x,currentNormal.y);
+	// }
+	// Renderer::basicRenderEnd();
 
 }
 
@@ -72,6 +81,12 @@ void SceneBoundTest::update(GWindow* window){
 	runPhysics(ImGui::GetIO().DeltaTime);
 	input(window);
 	m_object->updateGlobalVertices();
+	m_b->updateGlobalVertices();
+
+	bool colliding = Collision::SAT2(m_object->getBound(),m_b->getBound());
+	if(colliding){
+		std::cout << "True" << std::endl;
+	}
 }
 
 void SceneBoundTest::renderGUI(){
@@ -81,7 +96,7 @@ void SceneBoundTest::renderGUI(){
 }
 	
 void SceneBoundTest::input(GWindow* window){
-	float speed = 1.0f;
+	float speed = 0.1f;
 	glm::vec2 currentPosition = m_object->getPosition();
 
 	if(GInput::isKeyDown(GLFW_KEY_UP)){
@@ -114,6 +129,6 @@ void SceneBoundTest::input(GWindow* window){
 
 void SceneBoundTest::runPhysics(float dt, GWindow* window){
 	// m_forceGravity.updateForce(m_hangingObj,ImGui::GetIO().DeltaTime);
-	integrate(ImGui::GetIO().DeltaTime);
-	generateContacts();
+	//integrate(ImGui::GetIO().DeltaTime);
+	//generateContacts();
 }

@@ -129,7 +129,7 @@ glm::vec2 EngineMath::calcFaceNormal(float x1, float y1, float x2, float y2){
 
 	//normals are (-dy, dx) and (dy, -dx)
 
-	return glm::vec2(dy,-dx);
+	return glm::vec2(dy,-dx)  /  glm::length(glm::vec2(dy,-dx));
 }
 
 float EngineMath::calcCircleInertia(float mass, float radius){
@@ -152,8 +152,16 @@ float EngineMath::calcPolygonInertia(float density, const float* vertices, int s
 }
 
 float EngineMath::minPointToLineDistance(float p1, float p2, float x1, float y1, float x2, float y2){
-	float m = (y2 - y1) / (x2 - x1);
-	float b = y1 - (x1 * m);
+	glm::vec2 p(p1,p2);
+	glm::vec2 xy1(x1,y1);
+	glm::vec2 xy2(x2,y2);
 
-	return 0.0f;
+	float l2 = pow(glm::length(xy2 - xy1),2.0f);
+	if(l2 == 0.0f){
+		return glm::length(xy1 - p);
+	}
+
+	float t = glm::max(0.0f,glm::min(1.0f,glm::dot(p - xy1,xy2 - xy1)/l2));
+	glm::vec2 projection = xy1 + t * (xy2 - xy1);
+	return glm::length(projection - p);
 }

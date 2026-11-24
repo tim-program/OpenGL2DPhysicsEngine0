@@ -125,4 +125,6 @@ public:
 	static glm::vec2 EPATest(std::vector<glm::vec2>& simplexVertices);
 	static float calcFurthestSupport(Bound* a, Bound* b);
 
+	static bool SAT2(Bound* a, Bound* b);
+
 };

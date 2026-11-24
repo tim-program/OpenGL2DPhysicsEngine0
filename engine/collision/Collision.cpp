@@ -1243,15 +1243,33 @@ float Collision::calcFurthestSupport(Bound* a, Bound* b){
 	float bestDistance = -INFINITY;
 	float bestIndex = 0;
 	for(int i = 0;i<a->getVertexCount();i++){
-		glm::vec2 vertexB = EngineMath::polygonSupport(b->getVertices(),a->getFaceNormalAt(i),b->getVertexCount() * 2);
+		glm::vec2 vertexB = EngineMath::polygonSupport(b->getVertices(),-a->getFaceNormalAt(i),b->getVertexCount() * 2);
 
 		Face* faceA = a->getFaceInArray(i);
 		float distance = EngineMath::minPointToLineDistance(vertexB.x,vertexB.y,*(faceA->x1),*(faceA->y1),*(faceA->x2),*(faceA->y2));
-
+		
+		//float distance = glm::dot(a->getFaceNormalAt(i),vertexB - glm::vec2(*(a->getVertices()),*(a->getVertices()+1)));
+		
+		
 		if(distance > bestDistance){
 			bestDistance = distance;
 			bestIndex = i;
 		}
 	}
 	return bestDistance;
+}
+
+bool Collision::SAT2(Bound* a, Bound* b){
+
+	float distanceA = Collision::calcFurthestSupport(a,b);
+	if(distanceA > 0.0f){
+		return false;
+	}
+
+	float distanceB = Collision::calcFurthestSupport(b,a);
+	if(distanceB > 0.0f){
+		return false;
+	}
+
+	return true;
 }

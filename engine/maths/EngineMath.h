@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <algorithm>
 #include "../../Dependencies/glm/glm.hpp"
 
 #define PI 3.14159265358979

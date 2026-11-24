@@ -27,6 +27,7 @@ class SceneBoundTest : public Scene{
 		Shader* m_shader;
 		Texture* m_texture;
 		Object* m_object;
+		Object* m_b;
 
 
 	public:
