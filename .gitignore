@@ -1,5 +1,7 @@
 #excluded directories
 Dependencies/*
+include/*
+lib/*
 objectFiles/
 build/
 oldCompile/
